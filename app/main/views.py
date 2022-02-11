@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect, render
-from upload.models import Submission
+from upload.models import FileSubmission
 from .forms import RegistrationForm
 
 # Create your views here.
 def index(request):
-    submission_list = Submission.objects.filter(private=False).order_by('-created_at')
+    submission_list = FileSubmission.objects.filter(private=False).order_by('-created_at')
     return render(request, "main/index.html", {'submission_list': submission_list})
 
 def registration(request):

@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import resolve
 from main.views import index
-from upload.models import Submission
+from upload.models import FileSubmission
 
 # Create your tests here.
 class HomePageTest(TestCase):
@@ -25,14 +25,14 @@ class HomePageTest(TestCase):
             username='testuser',
             password='testpassword'
         )
-        instance1 = Submission(
+        instance1 = FileSubmission(
             file=video,
             title='Test Submission 1',
             description="A test description",
             author=self.user
         )
         instance1.save()
-        instance2 = Submission(
+        instance2 = FileSubmission(
             file=video,
             title='Test Submission 2',
             description="Another test description",
@@ -54,14 +54,14 @@ class HomePageTest(TestCase):
             username='testuser',
             password='testpassword'
         )
-        instance1 = Submission(
+        instance1 = FileSubmission(
             file=video,
             title='Test Submission 1',
             description="A test description",
             author=self.user
         )
         instance1.save()
-        instance2 = Submission(
+        instance2 = FileSubmission(
             file=video,
             title='Test Submission 2', 
             description="Another test description",

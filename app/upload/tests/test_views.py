@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import resolve, reverse
-from upload.models import Submission
+from upload.models import FileSubmission
 from upload.views import image_upload, submission
 
 
@@ -36,7 +36,7 @@ class UploadPageTest(TestCase):
             }
         )
         # Get the ID of the object we just created so we can test the correct url
-        newObjectID = Submission.objects.first().id
+        newObjectID = FileSubmission.objects.first().id
         self.assertRedirects(
             response, 
             f'/upload/submission/{newObjectID}/', 
@@ -124,7 +124,7 @@ class SubmissionPageTest(TestCase):
             username='testuser',
             password='testpassword'
         )
-        instance1 = Submission(
+        instance1 = FileSubmission(
             title='Test Submission 1',
             description='This is test submission 1',
             file=video,

@@ -7,7 +7,7 @@ from selenium import webdriver
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hello_django.settings')
 import django
 django.setup() # Needs to be done before import models
-from upload.models import Submission
+from upload.models import FileSubmission
 
 class FunctionalTest(LiveServerTestCase):
     # Needed to make django.test LiveServerTestCase work
@@ -28,7 +28,7 @@ class FunctionalTest(LiveServerTestCase):
             username='testuser',
             password='testpassword'
         )
-        instance1 = Submission(
+        instance1 = FileSubmission(
             title='Test submission 1',
             description='This is test submission 1',
             file=video,
@@ -36,7 +36,7 @@ class FunctionalTest(LiveServerTestCase):
         )
         instance1.save()
         time.sleep(1)
-        instance2 = Submission(
+        instance2 = FileSubmission(
             title='Test submission 2',
             description='This is test submission 2',
             file=video,

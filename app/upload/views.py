@@ -3,14 +3,14 @@ from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
 
 from .forms import CommentForm, UploadFileForm
-from .models import Comment, Submission
+from .models import Comment, FileSubmission
 
 def image_upload(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
             form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
-                instance = Submission(
+                instance = FileSubmission(
                     title=request.POST['title'],
                     file=request.FILES['file'],
                     description=request.POST['description'],
@@ -27,14 +27,14 @@ def image_upload(request):
         return redirect(reverse('main:register'))
 
 def submission(request, submission_id):
-    submission = get_object_or_404(Submission, pk=submission_id)
-    commentList = submission.comment_set.all().order_by('-created_at')
+    submission = get_object_or_404(FileSubmission, pk=submission_id)
+    commentList = submission.comments.all().order_by('-created_at')
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             instance = Comment(
                 comment=request.POST['comment'],
-                submission=submission,
+                content_object=submission,
                 author=request.user
             )
             instance.save()

@@ -1,9 +1,29 @@
 import uuid
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-class Submission(models.Model):
+
+class Comment(models.Model):
+    # Upgrade with generic relations so we can associate comments with either
+    # FileSubmissions or LinkSubmissions
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_object = GenericForeignKey(
+        'content_type',
+        'object_id'
+    )
+    object_id = models.CharField(max_length=255)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    comment = models.CharField(max_length=255)
+
+
+class FileSubmission(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE
@@ -16,24 +36,7 @@ class Submission(models.Model):
     description = models.TextField(max_length=256)
     file = models.FileField()
     private = models.BooleanField(default=False)
-
-
-class Comment(models.Model):
-    # Upgrade with generic relations so we can associate comments with either
-    # FileSubmissions or LinkSubmissions
-    submission = models.ForeignKey(
-        Submission,
-        on_delete=models.CASCADE
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    comment = models.CharField(max_length=255)
+    comments = GenericRelation(Comment)
 
 # Build out link submission model
-
 # Build out reaction model
-    

@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from upload.models import Submission
+from upload.models import FileSubmission
 
 
 class UploadModelTests(TestCase):
@@ -18,13 +18,13 @@ class UploadModelTests(TestCase):
             username='testuser',
             password='testpassword',
         )
-        first_submission = Submission(
+        first_submission = FileSubmission(
             title='Test Submission 1',
             description='This is test submission 1.',
             author=user,
             file=video
         )
-        second_submission = Submission(
+        second_submission = FileSubmission(
             title='Test Submission 2',
             description='This is test submission 2.',
             author=user,
@@ -33,7 +33,7 @@ class UploadModelTests(TestCase):
         first_submission.save()
         second_submission.save()
 
-        saved_submissions = Submission.objects.all()
+        saved_submissions = FileSubmission.objects.all()
         self.assertEqual(saved_submissions.count(), 2)
 
         first_saved_submission = saved_submissions[0]
@@ -57,7 +57,7 @@ class UploadModelTests(TestCase):
             username='testuser',
             password='testpassword',
         )
-        test_submission = Submission(
+        test_submission = FileSubmission(
             title='',
             description='Test description',
             author=user,
@@ -77,7 +77,7 @@ class UploadModelTests(TestCase):
             username='testuser',
             password='testpassword',
         )
-        test_submission = Submission(
+        test_submission = FileSubmission(
             title='Test Submission 1',
             description='',
             author=user,
@@ -92,7 +92,7 @@ class UploadModelTests(TestCase):
             username='testuser',
             password='testpassword',
         )
-        test_submission = Submission(
+        test_submission = FileSubmission(
             title='Test Submission 1',
             description='This is a test submission.',
             author=user   
@@ -107,7 +107,7 @@ class UploadModelTests(TestCase):
             b"file_content",
             content_type="video/mp4"
         )
-        test_submission = Submission(
+        test_submission = FileSubmission(
             title='Test Submission 1',
             description='This is a test submission.',
             file=video
