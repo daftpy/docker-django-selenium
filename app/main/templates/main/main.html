@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load main_extras %}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <script src="https://kit.fontawesome.com/{% get_env_var 'FONT_AWESOME' %}.js" crossorigin="anonymous"></script>
+  <script src="https://twemoji.maxcdn.com/v/13.1.0/twemoji.min.js" integrity="sha384-gPMUf7aEYa6qc3MgqTrigJqf4gzeO6v11iPCKv+AP2S4iWRWCoWyiR+Z7rWHM/hU" crossorigin="anonymous"></script>
+  {% load static %}
+  
+  <script>
+      console.log('hello world')
+  </script>
+  <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
+  <title>CritBoard</title>
+</head>
+<body>
+  <div class="navbar">
+    <div class="title m-5">
+      <a href="{% url 'main:index' %}">
+        CritBoard
+      </a>
+    </div>
+    <div class="userBadge m-5">
+      {% if user.is_authenticated %}
+        <ul class="has-text-centered">
+          <li class="username"><i class="fa-solid fa-user"></i> {{ user.username }}</li>
+          <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+      {% else %}
+        <ul class="has-text-centered">
+          <li><a href="{% url 'login' %}">Login</a></li>
+          <li><a href="{% url 'main:register' %}">Register</a></li>
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+  {% block content %}
+  {% endblock %}
+  
+  <div id="modal-js-communityguidlines" class="modal">
+    <div class="modal-background"></div>
+  
+    <div class="modal-content">
+      <div class="box">
+        <h2 class="title">Community Guidelines</h2>
+        <p>
+          Lorem ipsum dolor sit amet, nonummy ligula volutpat hac integer nonummy. Suspendisse ultricies, congue etiam 
+          tellus, erat libero, nulla eleifend, mauris pellentesque. Suspendisse integer praesent vel, integer gravida 
+          mauris, fringilla vehicula lacinia non
+        </p>
+        <ol class="community-guidelines ml-4 my-3">
+          <li class="my-2">Rule</li>
+          <li class="my-2">Rule</li>
+          <li class="my-2">Rule</li>
+          <li class="my-2">Rule</li>
+        </ol>
+        <p class="pb-2">
+          Lorem ipsum dolor sit amet, nonummy ligula volutpat hac integer nonummy. Suspendisse ultricies, congue etiam 
+          tellus, erat libero, nulla eleifend, mauris pellentesque.
+        </p>
+      </div>
+    </div>    
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+
+  <script>
+    twemoji.parse(document.body);
+
+    document.addEventListener('DOMContentLoaded', () => {
+    // Functions to open and close a modal
+    function openModal($el) {
+        $el.classList.add('is-active');
+    }
+
+    function closeModal($el) {
+        $el.classList.remove('is-active');
+    }
+
+    function closeAllModals() {
+        (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+        closeModal($modal);
+        });
+    }
+
+    // Add a click event on buttons to open a specific modal
+    (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+        const modal = $trigger.dataset.target;
+        const $target = document.getElementById(modal);
+        console.log($target);
+
+        $trigger.addEventListener('click', () => {
+        openModal($target);
+        });
+    });
+
+    // Add a click event on various child elements to close the parent modal
+    (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+        const $target = $close.closest('.modal');
+
+        $close.addEventListener('click', () => {
+        closeModal($target);
+        });
+    });
+
+    // Add a keyboard event to close all modals
+    document.addEventListener('keydown', (event) => {
+        const e = event || window.event;
+
+        if (e.keyCode === 27) { // Escape key
+        closeAllModals();
+        }
+    });
+    });
+  </script>
+</body>
+</html>

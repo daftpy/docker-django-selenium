@@ -1,0 +1,104 @@
+{% extends 'main/main.html' %}
+{% block content %}
+<section class="hero">
+  <div class="hero-body">
+    {% if submission %}
+      <p class="title">{{ submission.title }}</p>
+      <p class="subtitle">
+        <b class="m-1"><i class="fa-solid fa-user"></i>  {{ submission.author.username }}</b>
+        <span class="tag is-light submissionDate m-1"><i class="fa-solid fa-calendar pr-1"></i>{{ submission.created_at|date:"d M Y" }}</span>
+      </p>
+      <img class="submission-piece mt-6 mb-5" src='{{ submission.file.url }}'>
+    {% endif %}
+    <ul class="reaction-bar">
+      <li>
+        <a href="#"><span class="tag is-info is-rounded">&#x1F624; 1</span></a>
+      </li>
+      <li>
+        <a href="#"><span class="tag is-info is-rounded">&#x1F30A; 3</span></a>
+      </li>
+      <li>
+        <a href="#"><span class="tag is-info is-rounded">&#x1F680; 2</span></a>
+      </li>
+      <li>
+        <a href="#"><span class="tag is-info is-rounded">&#x1F634; 1</span></a>
+      </li>
+    </ul>
+    <p class="subtitle mt-5 mb-2"><b>Description</b></p>
+    <p class="subtitle my-0" id="submissionDescription">{{submission.description}}</p>
+  </div>
+</section>
+<div class="content m-5">
+    <h2>React</h2>
+    <ul class="reaction-bar">
+        <li>
+          <a href="#"><span class="tag is-info is-rounded">&#x1F624;</span></a>
+        </li>
+        <li>
+          <a href="#"><span class="tag is-info is-rounded">&#x1F30A;</span></a>
+        </li>
+        <li>
+          <a href="#"><span class="tag is-info is-rounded">&#x1F680;</span></a>
+        </li>
+        <li>
+          <a href="#"><span class="tag is-info is-rounded">&#x1F634;</span></a>
+        </li>
+        <li>
+          <a href="#"><span class="tag is-info is-rounded">&#9760;</span></a>
+        </li>
+        <li>
+          <a href="#"><span class="tag is-info is-rounded">&#129313;</span></a>
+        </li>
+      </ul>
+  <h2 id="commentHeader">Comments</h2>
+  <p>
+    Please make sure all comments conform with the <a class="js-modal-trigger" data-target="modal-js-communityguidlines">community guidelines</a>.
+    Violations can result in your account being permanently suspended.
+  </p>
+  <form
+    class="my-5"
+    action='/upload/submission/{{submission.id}}/'
+    enctype="multipart/form-data"
+    method='post'
+  >
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="fieldWrapper my-5">
+        {{ form.comment.errors }}
+        <label class="label" for="{{ form.comment.id_for_label }}">Comment</label>
+        <div class="control">
+            <textarea
+                class="textarea is-small"
+                id="id_comment"
+                name="comment"
+            required></textarea>
+        </div>
+    </div>
+    <input
+      id="form_submit"
+      class="button is-success"
+      type="submit"
+      value="submit"
+    >
+  </form>
+  {% if comments %}
+  <ul class="mt-5">
+    {% for comment in comments %}
+      <li class="commentWrapper">
+        <a class="commmentLink">
+          <div class="commentAuthor">
+            <b class="m-1"><i class="fa-solid fa-user"></i>  {{ comment.author.username }}</b>
+            <span class="tag is-light m-1 commentDate"><i class="fa-solid fa-calendar pr-1"></i> {{ comment.created_at|date:"d M Y" }}</span>
+          </div>
+          <div class="commentText">
+            {{ comment.comment }}
+          </div>
+          <div>Todo hidden reaction bar</div>
+        </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}

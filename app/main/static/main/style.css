@@ -1,0 +1,84 @@
+img.emoji {
+    height: 1.25em;
+    width: 1.25em;
+    margin: 0 .5em 0 .1em;
+    vertical-align: -0.1em;
+ }
+.hero {
+    background-color: #485fc7;
+    color: #ffffff;
+}
+.hero .title {
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+.hero .subtitle {
+    color: #ebefff;
+    font-size: 1rem;
+}
+.content ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.content ul li {
+    margin: 0;
+}
+.content ul li {
+    border-bottom: 1px solid #ebefff;
+}
+.content ul li:last-child {
+    border-bottom: none;
+}
+.content ul li a {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    color: #4a4a4a;
+    font-size: 14px;
+}
+.content ul li a > * {
+    padding: .5rem;
+    text-align: center;
+}
+.commentLink {
+    display: flex;
+    justify-content: space-between;
+}
+.community-guidelines {
+    font-weight: bold;
+}
+.listTitle {
+    color: #485fc7;
+    font-size: 16px;
+}
+.listLink {
+    padding: 1rem;
+}
+.listLink:hover {
+    background: #f0f3ff;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+.reaction-bar {
+    padding: .5em;
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-around;
+    font-size: 14px;
+}
+.reaction-bar a {
+    color: #ffffff;
+    font-weight: bold;
+}
+.submission-piece {
+    display: block;
+    margin: 0 auto;
+}
+.username {
+    font-weight: bold;
+}

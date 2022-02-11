@@ -1,0 +1,113 @@
+{% extends 'main/main.html' %}
+
+{% block content %}
+<div class="content my-6 mx-5">
+  <h2 class="pageHeader">Upload</h2>
+  <p>
+    All submissions must follow <a class="js-modal-trigger" data-target="modal-js-communityguidlines">community guidelines.</a> Make sure you have
+    permission to share whatever files you are attatching to your submission.
+  </p>
+
+  <form action='/upload/' enctype="multipart/form-data" method='post'>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="fieldWrapper field my-5">
+      {{ form.title.errors }}
+      <label class="label" for="{{ form.title.id_for_label }}">Title</label>
+      <div class="control">
+        <input 
+          class="input"
+          id="id_title"
+          type="text"
+          name="title"
+          maxlength="64"
+        required>
+      </div>
+    </div>
+
+    <div class="fieldWrapper file has-name my-5">
+      {{ form.file.errors }}
+      <label class="file-label" for="{{ form.file.id_for_label }}">
+        <input 
+          class="file-input"
+          id="id_file"
+          type="file"
+          name="file"
+        required>
+        <span class="file-cta">
+          <span class="file-icon">
+            <i class="fas fa-upload"></i>
+          </span>
+          <span class="file-label">
+            Choose a file…
+          </span>
+        </span>
+        <span class="file-name">
+          <i class="fas fa-file-upload"></i>
+        </span>
+      </label>
+    </div>
+
+    <div class="fieldWrapper my-5">
+      {{ form.description.errors }}
+      <label class="label" for="{{ form.description.id_for_label }}">Description</label>
+      <textarea
+        class="textarea"
+        id="id_description"
+        name="description"
+      required></textarea>
+    </div>
+    <div class="fieldWrapper my-3">
+      {{ form.private.errors }}
+      <label class="checkbox" for="{{ form.private.id_for_label}}">
+        <input
+          type="checkbox"
+          name="private"
+          id="id_private"
+        >
+        Private Submission
+      </label>
+    </div>
+    <div class="fieldWrapper mt-3 mb-5">
+        {{ form.permission.errors }}
+        <label class="checkbox" for="{{ form.permission.id_for_label}}">
+          <input
+            type="checkbox"
+            name="permission"
+            id="id_permission"
+          required>
+          <strong>I have permission to upload this</strong>
+        </label>
+    </div>
+    <input
+      id="form_submit"
+      class="button is-static"
+      type="submit"
+      value="submit"
+    >
+  </form>
+
+  {% if image_url %}
+    <p class="uploaded">File uploaded at: <a href="{{ image_url }}">{{ image_url }}</a></p>
+  {% endif %}
+</div>
+<script>
+  permissionBox = document.querySelector('#id_permission');
+  submitButton = document.querySelector('#form_submit');
+  fileFieldText = document.querySelector('.file-name');
+
+  permissionBox.onchange = function() {
+    if (permissionBox.checked) {
+      submitButton.className = 'button is-success';
+    } else {
+      submitButton.className = 'button is-static';
+    }
+  };
+
+  document.querySelector('#id_file').onchange = function() {
+    fileFieldText.innerHTML = this.files[0].name;
+    console.log('changed')
+  }
+</script>
+{% endblock %}
