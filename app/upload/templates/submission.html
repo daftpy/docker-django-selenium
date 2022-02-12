@@ -10,46 +10,27 @@
       </p>
       <img class="submission-piece mt-6 mb-5" src='{{ submission.file.url }}'>
     {% endif %}
-    <ul class="reaction-bar">
-      <li>
-        <a href="#"><span class="tag is-info is-rounded">&#x1F624; 1</span></a>
-      </li>
-      <li>
-        <a href="#"><span class="tag is-info is-rounded">&#x1F30A; 3</span></a>
-      </li>
-      <li>
-        <a href="#"><span class="tag is-info is-rounded">&#x1F680; 2</span></a>
-      </li>
-      <li>
-        <a href="#"><span class="tag is-info is-rounded">&#x1F634; 1</span></a>
-      </li>
-    </ul>
+    <div class="tags are-medium reaction-bar">
+        <a href="#"><span>&#x1F624; 1</span></a>
+        <a href="#"><span>&#x1F30A; 3</span></a>
+        <a href="#"><span>&#x1F680; 2</span></a>
+        <a href="#"><span>&#x1F634; 1</span></a>
+        </div>
     <p class="subtitle mt-5 mb-2"><b>Description</b></p>
     <p class="subtitle my-0" id="submissionDescription">{{submission.description}}</p>
   </div>
 </section>
 <div class="content m-5">
-    <h2>React</h2>
-    <ul class="reaction-bar">
-        <li>
-          <a href="#"><span class="tag is-info is-rounded">&#x1F624;</span></a>
-        </li>
-        <li>
-          <a href="#"><span class="tag is-info is-rounded">&#x1F30A;</span></a>
-        </li>
-        <li>
-          <a href="#"><span class="tag is-info is-rounded">&#x1F680;</span></a>
-        </li>
-        <li>
-          <a href="#"><span class="tag is-info is-rounded">&#x1F634;</span></a>
-        </li>
-        <li>
-          <a href="#"><span class="tag is-info is-rounded">&#9760;</span></a>
-        </li>
-        <li>
-          <a href="#"><span class="tag is-info is-rounded">&#129313;</span></a>
-        </li>
-      </ul>
+  <h2>React</h2>
+  <div class="tags are-medium reaction-bar">
+    <a href="#"><span class="tag is-link is-rounded">&#x1F624;</span></a>
+    <a href="#"><span class="tag is-link is-rounded">&#x1F680;</span></a>
+    <a href="#"><span class="tag is-link is-rounded">&#x1F30A;</span></a>
+    <a href="#"><span class="tag is-link is-rounded">&#x1F680;</span></a>
+    <a href="#"><span class="tag is-link is-rounded">&#x1F634;</span></a>
+    <a href="#"><span class="tag is-link is-rounded">&#9760;</span></a>
+    <a href="#"><span class="tag is-link is-rounded">&#129313;</span></a>
+  </div>
   <h2 id="commentHeader">Comments</h2>
   <p>
     Please make sure all comments conform with the <a class="js-modal-trigger" data-target="modal-js-communityguidlines">community guidelines</a>.
