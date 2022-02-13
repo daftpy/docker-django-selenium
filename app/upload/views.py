@@ -47,3 +47,12 @@ def submission(request, submission_id):
         'form': form,
         'comments': commentList
     })
+
+def submit_view(request):
+    if request.user.is_authenticated:
+        return render(request, 'submission_select.html')
+    else:
+        return redirect(reverse('main:register'))
+
+def submit_link(request):
+    return render(request, 'submit_link.html')

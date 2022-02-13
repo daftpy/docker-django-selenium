@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from upload.views import submit_view
 
 urlpatterns = [
     path("", include('main.urls')),
-    path('upload/', include('upload.urls')),
+    path('submission/', include('upload.urls')),
     path("admin/", admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
 ]

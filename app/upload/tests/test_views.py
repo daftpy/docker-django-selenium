@@ -3,13 +3,13 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import resolve, reverse
 from upload.models import FileSubmission
-from upload.views import image_upload, submission
+from upload.views import image_upload, submission, submit_view
 
 
 class UploadPageTest(TestCase):
 
     def test_upload_url_resolves_to_upload_page_view(self):
-        found = resolve('/upload/')
+        found = resolve('/submission/file/')
         self.assertEqual(found.func, image_upload)
 
     def test_upload_view_redirects_after_upload(self):
@@ -27,7 +27,7 @@ class UploadPageTest(TestCase):
             password='testpassword'
         )
         response = self.client.post(
-            reverse('upload:index'),
+            reverse('upload:submit_file'),
             {
                 'file': video,
                 'title': 'Test Submission',
@@ -39,7 +39,7 @@ class UploadPageTest(TestCase):
         newObjectID = FileSubmission.objects.first().id
         self.assertRedirects(
             response, 
-            f'/upload/submission/{newObjectID}/', 
+            f'/submission/id/{newObjectID}/', 
             status_code=302, 
             target_status_code=200, 
             fetch_redirect_response=True
@@ -60,7 +60,7 @@ class UploadPageTest(TestCase):
             password='testpassword'
         )
         response = self.client.post(
-            reverse('upload:index'),
+            reverse('upload:submit_file'),
             {
                 'file': video,
                 'description': 'Yooo',
@@ -86,7 +86,7 @@ class UploadPageTest(TestCase):
             password='testpassword'
         )
         response = self.client.post(
-            reverse('upload:index'),
+            reverse('upload:submit_file'),
             {
                 'file': video,
                 'description': 'Yooo',
@@ -99,15 +99,22 @@ class UploadPageTest(TestCase):
         response = self.client.post(reverse('main:index'))
         self.assertNotIn('Yooo', response.content.decode())
 
-    def test_must_be_logged_in_to_view_upload_page(self):
-        response = self.client.post(reverse('upload:index'))
+
+class SubmissionSelectPageTest(TestCase):
+
+    def test_must_be_logged_in_to_view_submit_select_page(self):
+        response = self.client.post(reverse('upload:submit_select'))
         self.assertEqual(response.status_code, 302)
+
+    def test_submission_url_resolves_to_submit_select_page_view(self):
+        found = resolve('/submission/')
+        self.assertEqual(found.func, submit_view)
 
 
 class SubmissionPageTest(TestCase):
 
     def test_submission_url_resolves_to_submission_page_view(self):
-        found = resolve('/upload/submission/1/')
+        found = resolve('/submission/id/1/')
         self.assertEqual(found.func, submission)
 
     def test_submission_view_can_save_a_POST_request(self):

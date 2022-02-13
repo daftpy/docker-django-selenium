@@ -4,7 +4,7 @@ from .base import FunctionalTest
 from selenium.webdriver.common.by import By
 
 
-class NewVisitorTest(FunctionalTest):
+class NewVisitorUploadTest(FunctionalTest):
 
     def test_user_can_upload_art_for_critique(self):
         user = User.objects.create_user(
@@ -21,15 +21,17 @@ class NewVisitorTest(FunctionalTest):
         self.browser.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
         self.browser.refresh()
 
-        # The user visits the site and notices you can upload
-        # art and recieve feedback.
-        # self.browser.get(self.live_server_url)
-        uploadButton = self.browser.find_element(By.ID, 'uploadPage')
+        # The user visits the site and notices you can submit art
+        # and recieve feedback.
+        self.browser.find_element(By.ID, 'submitPage').click()
         
-        # The user clicks the button and is taken to the
-        # upload page.
-        uploadButton.click()
-        self.assertIn('/upload/', self.browser.current_url)
+        # The user is taken to the submission selection page and notices
+        # they can either upload a file or submit a link.
+        self.assertIn('/submission/', self.browser.current_url)
+
+        # They choose to upload a file.
+        self.browser.find_element(By.ID, 'uploadPage').click()
+
         pageHeader = self.browser.find_element(By.CLASS_NAME, 'pageHeader').text
         self.assertEqual(pageHeader, 'Upload')
 

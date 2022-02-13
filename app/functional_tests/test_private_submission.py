@@ -22,6 +22,10 @@ class PrivateSubmissionTest(FunctionalTest):
         # The user is feeling a little self concious about their art
         # submission. They want to make sure it won't appear on the wall.
         # They go to the upload page.
+        self.browser.find_element(By.ID, 'submitPage').click()
+
+        # They want to upload the file since it has never been uploaded
+        # anywhere else.
         self.browser.find_element(By.ID, 'uploadPage').click()
         
         # The user wants critique and types the path of a file to

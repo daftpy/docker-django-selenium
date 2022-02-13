@@ -8,7 +8,7 @@
     permission to share whatever files you are attatching to your submission.
   </p>
 
-  <form action='/upload/' enctype="multipart/form-data" method='post'>
+  <form action="{% url 'upload:submit_file' %}" enctype="multipart/form-data" method='post'>
     {% csrf_token %}
     {{ form.non_field_errors }}
 
