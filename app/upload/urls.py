@@ -8,6 +8,6 @@ urlpatterns = [
     path('file/', views.image_upload, name='submit_file'),
     path('link/', views.submit_link, name='submit_link'),
     path(
-        'id/<str:submission_id>/', views.submission, name='submission'
+        '<str:submission_type>/<str:submission_id>/', views.submission, name='submission'
     )
 ]

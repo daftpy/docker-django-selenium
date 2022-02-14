@@ -31,4 +31,14 @@ class NewVisitorSubmitLinkTest(FunctionalTest):
         # or uploading a file. Since the user already uploaded their
         # file to soundcloud, they will just submit the link.
         self.browser.find_element(By.ID, 'linkPage').click()
+
+        # The user is taken to the link submission page.
         self.assertIn('/submission/link/', self.browser.current_url)
+
+        pageHeader = self.browser.find_element(By.CLASS_NAME, 'pageHeader').text
+        self.assertEqual(pageHeader, 'Link Submission')
+
+        # The user see's a form and begins to fill it out in order
+        # to submit their link.
+        titleField = self.browser.find_element(By.NAME, 'title')
+        titleField.send_keys('The Best Art')

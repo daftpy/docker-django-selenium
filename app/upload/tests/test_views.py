@@ -3,7 +3,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import resolve, reverse
 from upload.models import FileSubmission
-from upload.views import image_upload, submission, submit_view
+from upload.views import image_upload, submission, submit_view, submit_link
 
 
 class UploadPageTest(TestCase):
@@ -39,7 +39,7 @@ class UploadPageTest(TestCase):
         newObjectID = FileSubmission.objects.first().id
         self.assertRedirects(
             response, 
-            f'/submission/id/{newObjectID}/', 
+            f'/submission/file/{newObjectID}/', 
             status_code=302, 
             target_status_code=200, 
             fetch_redirect_response=True
@@ -114,7 +114,7 @@ class SubmissionSelectPageTest(TestCase):
 class SubmissionPageTest(TestCase):
 
     def test_submission_url_resolves_to_submission_page_view(self):
-        found = resolve('/submission/id/1/')
+        found = resolve('/submission/file/1/')
         self.assertEqual(found.func, submission)
 
     def test_submission_view_can_save_a_POST_request(self):
@@ -138,9 +138,40 @@ class SubmissionPageTest(TestCase):
             author=self.user
         )
         instance1.save()
-        response = self.client.post(
-            reverse('upload:submission', kwargs={'submission_id': instance1.id}),
-            {'comment': 'This is bad'},
+        response = self.client.post(reverse('upload:submission', kwargs={
+            'submission_type': 'file',
+            'submission_id': instance1.id
+        }),
+            data={'comment': 'This is bad'},
             follow=True
         )
         self.assertIn('This is bad', response.content.decode())
+
+
+class SubmitLinkViewTest(TestCase):
+
+    def test_submit_link_url_resolves_to_submit_link_view(self):
+        found = resolve('/submission/link/')
+        self.assertEqual(found.func, submit_link)
+
+    def test_submit_link_view_can_save_POST_request(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword'
+        )
+        self.client.login(
+            username='testuser',
+            password='testpassword'
+        )
+        response = self.client.post(
+            reverse('upload:submit_link'),
+            {
+                'title': 'Test Link Submission',
+                'description': 'This is a test link submission',
+                'link': 'https://soundcloud.com',
+                'permission': 'on'
+            },
+            follow=True
+        )
+        response = self.client.post(reverse('main:index'))
+        self.assertIn('Test Link Submission', response.content.decode())

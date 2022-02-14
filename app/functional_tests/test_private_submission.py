@@ -17,7 +17,12 @@ class PrivateSubmissionTest(FunctionalTest):
         )
         cookie = self.client.cookies['sessionid']
         self.browser.get(self.live_server_url)
-        self.browser.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
+        self.browser.add_cookie({
+            'name': 'sessionid',
+            'value': cookie.value,
+            'secure': False,
+            'path': '/'
+        })
         self.browser.refresh()
         # The user is feeling a little self concious about their art
         # submission. They want to make sure it won't appear on the wall.
@@ -30,7 +35,9 @@ class PrivateSubmissionTest(FunctionalTest):
         
         # The user wants critique and types the path of a file to
         # upload for review.
-        fileField = self.browser.find_element(By.XPATH, "//input[@type='file']")
+        fileField = self.browser.find_element(
+            By.XPATH, "//input[@type='file']"
+        )
         fileField.send_keys(os.getcwd() + '/upload_test_pic.png')
 
         titleField = self.browser.find_element(By.NAME, 'title')

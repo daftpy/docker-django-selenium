@@ -1,5 +1,93 @@
 {% extends 'main/main.html' %}
 
 {% block content %}
-<p>Submit link</p>
+<div class="content my-6 mx-5">
+  <h2 class="pageHeader">Link Submission</h2>
+  <p>
+    All submissions must follow <a class="js-modal-trigger" data-target="modal-js-communityguidlines">community guidelines.</a> Make sure you have
+    permission to share whatever files you are attatching to your submission.
+  </p>
+  <form action="{% url 'upload:submit_link' %}" enctype="multipart/form-data" method='post'>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="fieldWrapper field my-5">
+      {{ form.title.errors }}
+      <label class="label" for="{{ form.title.id_for_label }}">Title</label>
+      <div class="control">
+        <input 
+          class="input"
+          id="id_title"
+          type="text"
+          name="title"
+          maxlength="64"
+        required>
+      </div>
+    </div>
+
+    <div class="fieldWrapper field my-5">
+        {{ form.link.errors }}
+        <label class="label" for="{{ form.link.id_for_label }}">Link</label>
+        <div class="control">
+          <input 
+            class="input"
+            id="id_link"
+            type="text"
+            name="link"
+            maxlength="64"
+          required>
+        </div>
+      </div>
+
+    <div class="fieldWrapper my-5">
+      {{ form.description.errors }}
+      <label class="label" for="{{ form.description.id_for_label }}">Description</label>
+      <textarea
+        class="textarea"
+        id="id_description"
+        name="description"
+      required></textarea>
+    </div>
+    <div class="fieldWrapper my-3">
+      {{ form.private.errors }}
+      <label class="checkbox" for="{{ form.private.id_for_label}}">
+        <input
+          type="checkbox"
+          name="private"
+          id="id_private"
+        >
+        Private Submission
+      </label>
+    </div>
+    <div class="fieldWrapper mt-3 mb-5">
+        {{ form.permission.errors }}
+        <label class="checkbox" for="{{ form.permission.id_for_label}}">
+          <input
+            type="checkbox"
+            name="permission"
+            id="id_permission"
+          required>
+          <strong>I have permission to upload this</strong>
+        </label>
+    </div>
+    <input
+      id="form_submit"
+      class="button is-static"
+      type="submit"
+      value="submit"
+    >
+  </form>
+  <script>
+    permissionBox = document.querySelector('#id_permission');
+    submitButton = document.querySelector('#form_submit');
+  
+    permissionBox.onchange = function() {
+      if (permissionBox.checked) {
+        submitButton.className = 'button is-success';
+      } else {
+        submitButton.className = 'button is-static';
+      }
+    };
+  </script>
+</div>
 {% endblock %}

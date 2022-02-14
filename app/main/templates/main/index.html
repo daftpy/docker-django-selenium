@@ -15,7 +15,7 @@
     <ul>
       {% for submission in submission_list %}
       <li class="submission">
-        <a class="listLink submissionLink" href="{% url 'upload:submission' submission.id %}">
+        <a class="listLink submissionLink" href="{% url 'upload:submission' submission_type='file' submission_id=submission.id %}">
           <span class="listTitle submissionTitle"><b>{{ submission.title }}</b></span>  
           <span><b>Description:</b> {{ submission.description }}</span>
           <span><b>Created:</b> {{ submission.created_at }}</span>

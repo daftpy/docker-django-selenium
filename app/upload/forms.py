@@ -1,3 +1,4 @@
+import re
 from django import forms
 
 
@@ -11,3 +12,11 @@ class UploadFileForm(forms.Form):
 
 class CommentForm(forms.Form):
     comment = forms.CharField(widget=forms.Textarea)
+
+
+class LinkSubmissionForm(forms.Form):
+    title = forms.CharField()
+    link = forms.CharField()
+    description = forms.CharField(widget=forms.Textarea)
+    private = forms.BooleanField(initial=False, required=False)
+    permission = forms.BooleanField(initial=False, required=True)

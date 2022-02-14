@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import URLValidator
 
 
 class Comment(models.Model):
@@ -38,5 +39,19 @@ class FileSubmission(models.Model):
     private = models.BooleanField(default=False)
     comments = GenericRelation(Comment)
 
-# Build out link submission model
+
+class LinkSubmission(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False
+    )
+    title = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(max_length=256)
+    link = models.CharField(max_length=256, validators=[URLValidator])
+    private = models.BooleanField(default=False)
+    comments = GenericRelation(Comment)
 # Build out reaction model
