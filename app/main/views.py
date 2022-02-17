@@ -1,4 +1,3 @@
-from audioop import reverse
 from itertools import chain
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect, render
@@ -11,13 +10,19 @@ def index(request):
     # submission_type field with the value 'file'. This is used to help
     # build dynamic urls in the template.
     file_submission_list = FileSubmission.objects.filter(
-        private=False).order_by('-created_at').annotate(
+            private=False
+        ).order_by(
+            '-created_at'
+        ).annotate(
             submission_type=Value('file', output_field=CharField()
         )
     )
     # We do the same as above for link submissions.
     link_submission_list = LinkSubmission.objects.filter(
-        private=False).order_by('-created_at').annotate(
+            private=False
+        ).order_by(
+            '-created_at'
+        ).annotate(
             submission_type=Value('link', output_field=CharField()
         )
     )
@@ -25,7 +30,10 @@ def index(request):
     # Combine the link submission and file submission querysets
     # order by created_at and reverse the list.
     result_list = sorted(
-        chain(file_submission_list, link_submission_list),
+        chain(
+            file_submission_list,
+            link_submission_list
+        ),
         key=lambda instance: instance.created_at,
         reverse=True
     )

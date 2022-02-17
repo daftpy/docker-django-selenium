@@ -1,33 +1,47 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
+from django.views import View
 
 from .forms import CommentForm, UploadFileForm, LinkSubmissionForm
 from .models import Comment, FileSubmission, LinkSubmission
 
-def image_upload(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = UploadFileForm(request.POST, request.FILES)
-            if form.is_valid():
-                instance = FileSubmission(
-                    title=request.POST['title'],
+
+class FileSubmissionView(View):
+    form_class = UploadFileForm
+    template_name = 'upload.html'
+
+    def get(self, request, *args, **kwags):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            instance = FileSubmission(
+                    title=form.cleaned_data['title'],
                     file=request.FILES['file'],
-                    description=request.POST['description'],
+                    description=form.cleaned_data['description'],
                     private=form.cleaned_data['private'],
                     author=request.user
                 )
-                instance.save()
-                return redirect(reverse(
-                    'upload:submission', kwargs={
+            instance.save()
+            return redirect(
+                reverse(
+                    'upload:submission',
+                    kwargs={
                         'submission_id': instance.id,
                         'submission_type': 'file'
                     }
-                ))
-        form = UploadFileForm()
-        return render(request, "upload.html", {'form': form})
-    else:
-        return redirect(reverse('main:register'))
+                )
+            )
+        return render(request, self.template_name, {'form': form})
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 def submission(request, submission_id, submission_type):
     if submission_type == 'file':

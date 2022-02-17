@@ -3,14 +3,15 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import resolve, reverse
 from upload.models import FileSubmission
-from upload.views import image_upload, submission, submit_view, submit_link
+from upload.views import submission, submit_view, submit_link, \
+    FileSubmissionView
 
 
 class UploadPageTest(TestCase):
 
     def test_upload_url_resolves_to_upload_page_view(self):
         found = resolve('/submission/file/')
-        self.assertEqual(found.func, image_upload)
+        self.assertEqual(found.func.__name__, FileSubmissionView.as_view().__name__)
 
     def test_upload_view_redirects_after_upload(self):
         video = SimpleUploadedFile(
