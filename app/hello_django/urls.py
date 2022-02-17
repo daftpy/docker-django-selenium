@@ -20,10 +20,10 @@ from django.conf.urls.static import static
 from upload.views import submit_view
 
 urlpatterns = [
-    path("", include('main.urls')),
-    path('submission/', include('upload.urls')),
+    path("", include("main.urls")),
+    path("submission/", include("upload.urls")),
     path("admin/", admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path("accounts/", include("django.contrib.auth.urls")),
 ]
 
 if bool(settings.DEBUG):

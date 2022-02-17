@@ -42,7 +42,7 @@
 #         # art and recieve feedback.
 #         self.browser.get('http://web:8000/')
 #         uploadButton = self.browser.find_element(By.ID, 'uploadPage')
-        
+
 #         # The user clicks the button and is taken to the
 #         # upload page.
 #         uploadButton.click()
@@ -58,7 +58,7 @@
 #         # The user clicks the upload button.
 #         uploadButton = self.browser.find_element(By.CSS_SELECTOR, "input[type='submit']")
 #         uploadButton.click()
-        
+
 #         # The user sees they are taken to a unique page for their
 #         # file with a section for comments.
 #         commentHeader = self.browser.find_elements(By.ID, 'commentHeader')

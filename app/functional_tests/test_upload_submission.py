@@ -5,62 +5,59 @@ from selenium.webdriver.common.by import By
 
 
 class NewVisitorUploadTest(FunctionalTest):
-
     def test_user_can_upload_art_for_critique(self):
-        user = User.objects.create_user(
-            username='Testuser',
-            password='testuser'
-        )
+        user = User.objects.create_user(username="Testuser", password="testuser")
         # Login the client for the test
-        self.client.login(
-            username='Testuser',
-            password='testuser'
-        )
-        cookie = self.client.cookies['sessionid']
+        self.client.login(username="Testuser", password="testuser")
+        cookie = self.client.cookies["sessionid"]
         self.browser.get(self.live_server_url)
-        self.browser.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
+        self.browser.add_cookie(
+            {"name": "sessionid", "value": cookie.value, "secure": False, "path": "/"}
+        )
         self.browser.refresh()
 
         # The user visits the site and notices you can submit art
         # and recieve feedback.
-        self.browser.find_element(By.ID, 'submitPage').click()
-        
+        self.browser.find_element(By.ID, "submitPage").click()
+
         # The user is taken to the submission selection page and notices
         # they can either upload a file or submit a link.
-        self.assertIn('/submission/', self.browser.current_url)
+        self.assertIn("/submission/", self.browser.current_url)
 
         # They choose to upload a file.
-        self.browser.find_element(By.ID, 'uploadPage').click()
+        self.browser.find_element(By.ID, "uploadPage").click()
 
-        pageHeader = self.browser.find_element(By.CLASS_NAME, 'pageHeader').text
-        self.assertEqual(pageHeader, 'Upload')
+        pageHeader = self.browser.find_element(By.CLASS_NAME, "pageHeader").text
+        self.assertEqual(pageHeader, "Upload")
 
         # The user wants critique and types the path of a file to
         # upload for review.
         fileField = self.browser.find_element(By.XPATH, "//input[@type='file']")
-        fileField.send_keys(os.getcwd() + '/upload_test_pic.png')
+        fileField.send_keys(os.getcwd() + "/upload_test_pic.png")
 
-        titleField = self.browser.find_element(By.NAME, 'title')
-        titleField.send_keys('The Best Art')
+        titleField = self.browser.find_element(By.NAME, "title")
+        titleField.send_keys("The Best Art")
 
         # The user gives the submission a brief description.
-        descriptionField = self.browser.find_element(By.NAME, 'description')
-        descriptionField.send_keys('This is a test description.')
+        descriptionField = self.browser.find_element(By.NAME, "description")
+        descriptionField.send_keys("This is a test description.")
 
         # The user checks the box to aknlowedge they have permission to
         # upload the file.
-        self.browser.find_element(By.NAME, 'permission').click()
+        self.browser.find_element(By.NAME, "permission").click()
 
         # The user clicks the upload button.
-        uploadButton = self.browser.find_element(By.CSS_SELECTOR, "input[type='submit']")
+        uploadButton = self.browser.find_element(
+            By.CSS_SELECTOR, "input[type='submit']"
+        )
         uploadButton.click()
 
         # The user sees they are taken to a unique page for their
         # file with a section for comments.
-        commentHeader = self.browser.find_elements(By.ID, 'commentHeader')
+        commentHeader = self.browser.find_elements(By.ID, "commentHeader")
         self.assertEqual(len(commentHeader), 1)
 
         # The user see's their title and description were saved accurately.
-        content = self.browser.find_element(By.TAG_NAME, 'body').text
-        self.assertIn('The Best Art', content)
-        self.assertIn('This is a test description.', content)
+        content = self.browser.find_element(By.TAG_NAME, "body").text
+        self.assertIn("The Best Art", content)
+        self.assertIn("This is a test description.", content)

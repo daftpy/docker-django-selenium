@@ -7,30 +7,27 @@ from upload.models import FileSubmission, LinkSubmission
 
 
 class UploadModelTests(TestCase):
-
     def setUp(self):
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
+            username="testuser",
+            password="testpassword",
         )
         self.video = SimpleUploadedFile(
-            "file.mp4",
-            b"file_content",
-            content_type="video/mp4"
+            "file.mp4", b"file_content", content_type="video/mp4"
         )
 
     def test_saving_and_retrieving_submissions(self):
         first_submission = FileSubmission(
-            title='Test Submission 1',
-            description='This is test submission 1.',
+            title="Test Submission 1",
+            description="This is test submission 1.",
             author=self.user,
-            file=self.video
+            file=self.video,
         )
         second_submission = FileSubmission(
-            title='Test Submission 2',
-            description='This is test submission 2.',
+            title="Test Submission 2",
+            description="This is test submission 2.",
             author=self.user,
-            file=self.video
+            file=self.video,
         )
         first_submission.save()
         second_submission.save()
@@ -41,20 +38,15 @@ class UploadModelTests(TestCase):
         first_saved_submission = saved_submissions[0]
         second_saved_submission = saved_submissions[1]
         self.assertEqual(
-            first_saved_submission.description,
-            'This is test submission 1.'
+            first_saved_submission.description, "This is test submission 1."
         )
         self.assertEqual(
-            second_saved_submission.description,
-            'This is test submission 2.'
+            second_saved_submission.description, "This is test submission 2."
         )
 
     def test_submission_requires_title(self):
         test_submission = FileSubmission(
-            title='',
-            description='Test description',
-            author=self.user,
-            file=self.video
+            title="", description="Test description", author=self.user, file=self.video
         )
         with self.assertRaises(ValidationError):
             test_submission.save()
@@ -62,10 +54,7 @@ class UploadModelTests(TestCase):
 
     def test_submission_requires_description(self):
         test_submission = FileSubmission(
-            title='Test Submission 1',
-            description='',
-            author=self.user,
-            file=self.video
+            title="Test Submission 1", description="", author=self.user, file=self.video
         )
         with self.assertRaises(ValidationError):
             test_submission.save()
@@ -73,9 +62,9 @@ class UploadModelTests(TestCase):
 
     def test_submission_requires_file(self):
         test_submission = FileSubmission(
-            title='Test Submission 1',
-            description='This is a test submission.',
-            author=self.user   
+            title="Test Submission 1",
+            description="This is a test submission.",
+            author=self.user,
         )
         with self.assertRaises(ValidationError):
             test_submission.save()
@@ -83,9 +72,9 @@ class UploadModelTests(TestCase):
 
     def test_submission_requires_author(self):
         test_submission = FileSubmission(
-            title='Test Submission 1',
-            description='This is a test submission.',
-            file=self.video
+            title="Test Submission 1",
+            description="This is a test submission.",
+            file=self.video,
         )
         with self.assertRaises(IntegrityError):
             test_submission.save()
@@ -93,23 +82,22 @@ class UploadModelTests(TestCase):
 
 
 class LinkModelTest(TestCase):
-
     def test_saving_and_retrieving_link_submission(self):
         user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
+            username="testuser",
+            password="testpassword",
         )
         test_submission = LinkSubmission(
-            title='Test Submission 1',
-            description='This is a test link submission',
-            link='https://soundcloud.com',
-            author=user
+            title="Test Submission 1",
+            description="This is a test link submission",
+            link="https://soundcloud.com",
+            author=user,
         )
         test_submission2 = LinkSubmission(
-            title='Test Submission 2',
-            description='This is another test link submission',
-            link='https://google.com',
-            author=user
+            title="Test Submission 2",
+            description="This is another test link submission",
+            link="https://google.com",
+            author=user,
         )
         test_submission.save()
         test_submission2.save()
