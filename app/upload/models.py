@@ -1,4 +1,6 @@
 import uuid
+from xml.dom import ValidationErr
+from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -35,9 +37,16 @@ class LinkSubmission(models.Model):
     title = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=256)
-    link = models.CharField(max_length=256, validators=[URLValidator])
+    link = models.CharField(max_length=256)
     private = models.BooleanField(default=False)
     comments = GenericRelation(Comment)
+
+    def clean(self):
+        validate = URLValidator()
+        try:
+            validate(self.link)
+        except ValidationError as e:
+            raise ValidationError({"link": e})
 
 
 # Build out reaction model

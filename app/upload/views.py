@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -92,13 +93,23 @@ def submit_link(request):
             form = LinkSubmissionForm(request.POST)
             if form.is_valid():
                 instance = LinkSubmission(
-                    title=request.POST["title"],
-                    link=request.POST["link"],
-                    description=request.POST["description"],
+                    title=form.cleaned_data["title"],
+                    link=form.cleaned_data["link"],
+                    description=form.cleaned_data["description"],
                     private=form.cleaned_data["private"],
                     author=request.user,
                 )
-                instance.save()
+                try:
+                    instance.full_clean()
+                    instance.save()
+                except ValidationError:
+                    instance.delete()
+                    link_error = "Link is not a valid link. Make sure the link starts with http//: or https://"
+                    return render(
+                        request,
+                        "submit_link.html",
+                        {"form": form, "link_error": link_error},
+                    )
                 return redirect(
                     reverse(
                         "upload:submission",

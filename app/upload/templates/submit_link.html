@@ -10,6 +10,9 @@
   <form action="{% url 'upload:submit_link' %}" enctype="multipart/form-data" method='post'>
     {% csrf_token %}
     {{ form.non_field_errors }}
+    {% if link_error %}
+      <p class="has-text-danger">{{ link_error }}</p>
+    {% endif %}
 
     <div class="fieldWrapper field my-5">
       {{ form.title.errors }}

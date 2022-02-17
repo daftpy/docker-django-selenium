@@ -82,24 +82,36 @@ class UploadModelTests(TestCase):
 
 
 class LinkModelTest(TestCase):
-    def test_saving_and_retrieving_link_submission(self):
-        user = User.objects.create_user(
+    def setUp(self):
+        self.user = User.objects.create_user(
             username="testuser",
             password="testpassword",
         )
+
+    def test_saving_and_retrieving_link_submission(self):
         test_submission = LinkSubmission(
             title="Test Submission 1",
             description="This is a test link submission",
             link="https://soundcloud.com",
-            author=user,
+            author=self.user,
         )
         test_submission2 = LinkSubmission(
             title="Test Submission 2",
             description="This is another test link submission",
             link="https://google.com",
-            author=user,
+            author=self.user,
         )
         test_submission.save()
         test_submission2.save()
         saved_submissions = LinkSubmission.objects.all()
         self.assertEqual(saved_submissions.count(), 2)
+
+    def test_link_submissions_validates_link(self):
+        test_submission = LinkSubmission(
+            title="Test Submission 1",
+            description="This is another test link submission",
+            link="not a link",
+            author=self.user,
+        )
+        with self.assertRaises(ValidationError):
+            test_submission.full_clean()
