@@ -3,7 +3,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import resolve, reverse
 from upload.models import FileSubmission
-from upload.views import submission, submit_view, submit_link, FileSubmissionView
+from upload.views import submit_view, submit_link, FileSubmissionView, SubmissionView
 
 
 class BaseTest(TestCase):
@@ -87,7 +87,7 @@ class SubmissionSelectPageTest(TestCase):
 class SubmissionPageTest(BaseTest):
     def test_submission_url_resolves_to_submission_page_view(self):
         found = resolve("/submission/file/1/")
-        self.assertEqual(found.func, submission)
+        self.assertEqual(found.func.__name__, SubmissionView.as_view().__name__)
 
     def test_submission_view_can_save_a_POST_request(self):
         self.client.login(username="testuser", password="testpassword")

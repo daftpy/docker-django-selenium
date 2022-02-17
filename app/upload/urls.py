@@ -9,8 +9,8 @@ urlpatterns = [
     path("link/", views.submit_link, name="submit_link"),
     path(
         "<str:submission_type>/<str:submission_id>/",
-        views.submission,
+        views.SubmissionView.as_view(),
         name="submission",
     ),
-    path("test/", views.FileSubmissionView.as_view(), name="test"),
+    # path("test/<str:submission_type>/<str:submission_id>/", views.SubmissionView.as_view(), name="test"),
 ]

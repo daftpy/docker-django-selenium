@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
-from django.core.files.storage import FileSystemStorage
 from django.views import View
 
 from .forms import CommentForm, UploadFileForm, LinkSubmissionForm
@@ -42,13 +41,33 @@ class FileSubmissionView(View):
         return super().dispatch(*args, **kwargs)
 
 
-def submission(request, submission_id, submission_type):
-    if submission_type == "file":
-        submission = get_object_or_404(FileSubmission, pk=submission_id)
-    else:
-        submission = get_object_or_404(LinkSubmission, pk=submission_id)
-    commentList = submission.comments.all().order_by("-created_at")
-    if request.method == "POST":
+class SubmissionView(View):
+    form_class = CommentForm
+    template_name = "submission.html"
+
+    def get(self, request, *args, **kwargs):
+        submission = self.get_submission(
+            submission_type=kwargs["submission_type"],
+            submission_id=kwargs["submission_id"],
+        )
+        self.commentList = submission.comments.all().order_by("-created_at")
+        form = CommentForm()
+        return render(
+            request,
+            "submission.html",
+            {
+                "submission": submission,
+                "form": form,
+                "comments": self.commentList,
+                "submission_type": kwargs["submission_type"],
+            },
+        )
+
+    def post(self, request, *args, **kwargs):
+        submission = self.get_submission(
+            submission_type=kwargs["submission_type"],
+            submission_id=kwargs["submission_id"],
+        )
         form = CommentForm(request.POST)
         if form.is_valid():
             instance = Comment(
@@ -61,22 +80,18 @@ def submission(request, submission_id, submission_type):
                 reverse(
                     "upload:submission",
                     kwargs={
-                        "submission_id": submission_id,
-                        "submission_type": submission_type,
+                        "submission_id": kwargs["submission_id"],
+                        "submission_type": kwargs["submission_type"],
                     },
                 )
             )
-    form = CommentForm()
-    return render(
-        request,
-        "submission.html",
-        {
-            "submission": submission,
-            "form": form,
-            "comments": commentList,
-            "submission_type": submission_type,
-        },
-    )
+
+    def get_submission(self, submission_type, submission_id):
+        if submission_type == "file":
+            submission = get_object_or_404(FileSubmission, pk=submission_id)
+        else:
+            submission = get_object_or_404(LinkSubmission, pk=submission_id)
+        return submission
 
 
 def submit_view(request):

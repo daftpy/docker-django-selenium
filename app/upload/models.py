@@ -1,5 +1,4 @@
 import uuid
-from xml.dom import ValidationErr
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
