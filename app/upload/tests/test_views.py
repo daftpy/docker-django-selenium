@@ -7,14 +7,9 @@ from upload.views import submission, submit_view, submit_link, \
     FileSubmissionView
 
 
-class UploadPageTest(TestCase):
-
-    def test_upload_url_resolves_to_upload_page_view(self):
-        found = resolve('/submission/file/')
-        self.assertEqual(found.func.__name__, FileSubmissionView.as_view().__name__)
-
-    def test_upload_view_redirects_after_upload(self):
-        video = SimpleUploadedFile(
+class BaseTest(TestCase):
+    def setUp(self):
+        self.video = SimpleUploadedFile(
             "file.mp4",
             b"file_content",
             content_type="video/mp4"
@@ -23,6 +18,13 @@ class UploadPageTest(TestCase):
             username='testuser',
             password='testpassword',
         )
+
+class UploadPageTest(BaseTest):
+    def test_upload_url_resolves_to_upload_page_view(self):
+        found = resolve('/submission/file/')
+        self.assertEqual(found.func.__name__, FileSubmissionView.as_view().__name__)
+
+    def test_upload_view_redirects_after_upload(self):
         self.client.login(
             username='testuser',
             password='testpassword'
@@ -30,7 +32,7 @@ class UploadPageTest(TestCase):
         response = self.client.post(
             reverse('upload:submit_file'),
             {
-                'file': video,
+                'file': self.video,
                 'title': 'Test Submission',
                 'description': 'Yooo',
                 'permission': 'on'
@@ -47,15 +49,6 @@ class UploadPageTest(TestCase):
         )
 
     def test_upload_view_can_save_a_POST_request(self):
-        video = SimpleUploadedFile(
-            "file.mp4",
-            b"file_content",
-            content_type="video/mp4"
-        )
-        self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
-        )
         self.client.login(
             username='testuser',
             password='testpassword'
@@ -63,7 +56,7 @@ class UploadPageTest(TestCase):
         response = self.client.post(
             reverse('upload:submit_file'),
             {
-                'file': video,
+                'file': self.video,
                 'description': 'Yooo',
                 'title': 'Test Title',
                 'permission': 'on'
@@ -73,15 +66,6 @@ class UploadPageTest(TestCase):
         self.assertIn('Yooo', response.content.decode())
 
     def test_can_upload_a_private_submission(self):
-        video = SimpleUploadedFile(
-            "file.mp4",
-            b"file_content",
-            content_type="video/mp4"
-        )
-        self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
-        )
         self.client.login(
             username='testuser',
             password='testpassword'
@@ -89,7 +73,7 @@ class UploadPageTest(TestCase):
         response = self.client.post(
             reverse('upload:submit_file'),
             {
-                'file': video,
+                'file': self.video,
                 'description': 'Yooo',
                 'title': 'Test Title',
                 'private': 'on',
@@ -102,7 +86,6 @@ class UploadPageTest(TestCase):
 
 
 class SubmissionSelectPageTest(TestCase):
-
     def test_must_be_logged_in_to_view_submit_select_page(self):
         response = self.client.post(reverse('upload:submit_select'))
         self.assertEqual(response.status_code, 302)
@@ -112,22 +95,12 @@ class SubmissionSelectPageTest(TestCase):
         self.assertEqual(found.func, submit_view)
 
 
-class SubmissionPageTest(TestCase):
-
+class SubmissionPageTest(BaseTest):
     def test_submission_url_resolves_to_submission_page_view(self):
         found = resolve('/submission/file/1/')
         self.assertEqual(found.func, submission)
 
     def test_submission_view_can_save_a_POST_request(self):
-        video = SimpleUploadedFile(
-            "file.mp4",
-            b"file_content",
-            content_type="video/mp4"
-        )
-        self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
-        )
         self.client.login(
             username='testuser',
             password='testpassword'
@@ -135,7 +108,7 @@ class SubmissionPageTest(TestCase):
         instance1 = FileSubmission(
             title='Test Submission 1',
             description='This is test submission 1',
-            file=video,
+            file=self.video,
             author=self.user
         )
         instance1.save()
@@ -149,17 +122,12 @@ class SubmissionPageTest(TestCase):
         self.assertIn('This is bad', response.content.decode())
 
 
-class SubmitLinkViewTest(TestCase):
-
+class SubmitLinkViewTest(BaseTest):
     def test_submit_link_url_resolves_to_submit_link_view(self):
         found = resolve('/submission/link/')
         self.assertEqual(found.func, submit_link)
 
     def test_submit_link_view_can_save_POST_request(self):
-        self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword'
-        )
         self.client.login(
             username='testuser',
             password='testpassword'

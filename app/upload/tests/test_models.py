@@ -8,27 +8,29 @@ from upload.models import FileSubmission, LinkSubmission
 
 class UploadModelTests(TestCase):
 
-    def test_saving_and_retrieving_submissions(self):
-        video = SimpleUploadedFile(
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword',
+        )
+        self.video = SimpleUploadedFile(
             "file.mp4",
             b"file_content",
             content_type="video/mp4"
         )
-        user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
-        )
+
+    def test_saving_and_retrieving_submissions(self):
         first_submission = FileSubmission(
             title='Test Submission 1',
             description='This is test submission 1.',
-            author=user,
-            file=video
+            author=self.user,
+            file=self.video
         )
         second_submission = FileSubmission(
             title='Test Submission 2',
             description='This is test submission 2.',
-            author=user,
-            file=video
+            author=self.user,
+            file=self.video
         )
         first_submission.save()
         second_submission.save()
@@ -48,69 +50,42 @@ class UploadModelTests(TestCase):
         )
 
     def test_submission_requires_title(self):
-        video = SimpleUploadedFile(
-            "file.mp4",
-            b"file_content",
-            content_type="video/mp4"
-        )
-        user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
-        )
         test_submission = FileSubmission(
             title='',
             description='Test description',
-            author=user,
-            file=video
+            author=self.user,
+            file=self.video
         )
         with self.assertRaises(ValidationError):
             test_submission.save()
             test_submission.full_clean()
 
     def test_submission_requires_description(self):
-        video = SimpleUploadedFile(
-            "file.mp4",
-            b"file_content",
-            content_type="video/mp4"
-        )
-        user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
-        )
         test_submission = FileSubmission(
             title='Test Submission 1',
             description='',
-            author=user,
-            file=video
+            author=self.user,
+            file=self.video
         )
         with self.assertRaises(ValidationError):
             test_submission.save()
             test_submission.full_clean()
 
     def test_submission_requires_file(self):
-        user = User.objects.create_user(
-            username='testuser',
-            password='testpassword',
-        )
         test_submission = FileSubmission(
             title='Test Submission 1',
             description='This is a test submission.',
-            author=user   
+            author=self.user   
         )
         with self.assertRaises(ValidationError):
             test_submission.save()
             test_submission.full_clean()
 
     def test_submission_requires_author(self):
-        video = SimpleUploadedFile(
-            "file.mp4",
-            b"file_content",
-            content_type="video/mp4"
-        )
         test_submission = FileSubmission(
             title='Test Submission 1',
             description='This is a test submission.',
-            file=video
+            file=self.video
         )
         with self.assertRaises(IntegrityError):
             test_submission.save()
