@@ -1,3 +1,4 @@
+from re import template
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
@@ -101,39 +102,45 @@ def submit_view(request):
         return redirect(reverse("main:register"))
 
 
-def submit_link(request):
-    if request.user.is_authenticated:
-        form = LinkSubmissionForm()
-        if request.method == "POST":
-            form = LinkSubmissionForm(request.POST)
-            if form.is_valid():
-                instance = LinkSubmission(
-                    title=form.cleaned_data["title"],
-                    link=form.cleaned_data["link"],
-                    description=form.cleaned_data["description"],
-                    private=form.cleaned_data["private"],
-                    author=request.user,
+class LinkSubmissionView(View):
+    form_class = LinkSubmissionForm
+    template_name = "submit_link.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = LinkSubmission(
+                title=form.cleaned_data["title"],
+                link=form.cleaned_data["link"],
+                description=form.cleaned_data["description"],
+                private=form.cleaned_data["private"],
+                author=request.user,
+            )
+            try:
+                instance.full_clean()
+                instance.save()
+            except ValidationError:
+                instance.delete()
+                link_error = "Link field is not a valid link. Make sure the link starts with http:// or https://"
+                return render(
+                    request,
+                    self.template_name,
+                    {"form": form, "link_error": link_error},
                 )
-                try:
-                    instance.full_clean()
-                    instance.save()
-                except ValidationError:
-                    instance.delete()
-                    link_error = "Link is not a valid link. Make sure the link starts with http//: or https://"
-                    return render(
-                        request,
-                        "submit_link.html",
-                        {"form": form, "link_error": link_error},
-                    )
-                return redirect(
-                    reverse(
-                        "upload:submission",
-                        kwargs={
-                            "submission_id": instance.id,
-                            "submission_type": "link",
-                        },
-                    )
+            return redirect(
+                reverse(
+                    "upload:submission",
+                    kwargs={
+                        "submission_id": instance.id,
+                        "submission_type": "link",
+                    },
                 )
-        return render(request, "submit_link.html", {"form": form})
-    else:
-        return redirect(reverse("main:register"))
+            )
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
