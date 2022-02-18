@@ -64,6 +64,7 @@ class SubmissionView(View):
             },
         )
 
+    @method_decorator(login_required())
     def post(self, request, *args, **kwargs):
         submission = self.get_submission(
             submission_type=kwargs["submission_type"],

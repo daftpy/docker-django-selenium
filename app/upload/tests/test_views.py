@@ -113,6 +113,25 @@ class SubmissionPageTest(BaseTest):
         )
         self.assertIn("This is bad", response.content.decode())
 
+    def test_must_be_authenticated_to_post_to_submission_view(self):
+        instance1 = FileSubmission(
+            title="Test Submission 1",
+            description="This is test submission 1",
+            file=self.video,
+            author=self.user,
+        )
+        instance1.save()
+        response = self.client.post(
+            reverse(
+                "upload:submission",
+                kwargs={"submission_type": "file", "submission_id": instance1.id},
+            ),
+            data={"comment": "This is bad"},
+            follow=True,
+        )
+        # Make sure client is sent to the login page.
+        self.assertIn("<h2>Login</h2>", response.content.decode())
+
 
 class SubmitLinkViewTest(BaseTest):
     def test_submit_link_url_resolves_to_submit_link_view(self):
