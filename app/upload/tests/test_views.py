@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 from django.test import TestCase
 from django.urls import resolve, reverse
 from upload.models import FileSubmission
@@ -9,12 +9,20 @@ from upload.views import (
     LinkSubmissionView,
     SubmissionView,
 )
+from pathlib import Path
 
 
 class BaseTest(TestCase):
     def setUp(self):
+        # Get the posix path for two directories up
+        self.path = str(Path(__file__).resolve().parents[2])
+        file_path = self.path + "/upload_test_vid.mp4"
+        # We read in real video content so it passes python-magic validation
+        # in the view
         self.video = SimpleUploadedFile(
-            "file.mp4", b"file_content", content_type="video/mp4"
+            name="test_vid.mp4",
+            content=open(file_path, "rb").read(),
+            content_type="video/mp4",
         )
         self.user = User.objects.create_user(
             username="testuser",
@@ -32,7 +40,7 @@ class UploadPageTest(BaseTest):
         response = self.client.post(
             reverse("upload:submit_file"),
             {
-                "file": self.video,
+                "file": self.video,  # make the posix path a string
                 "title": "Test Submission",
                 "description": "Yooo",
                 "permission": "on",
@@ -77,6 +85,28 @@ class UploadPageTest(BaseTest):
         )
         response = self.client.post(reverse("main:index"))
         self.assertNotIn("Yooo", response.content.decode())
+
+    def test_upload_view_validates_file_type(self):
+        self.client.login(username="testuser", password="testpassword")
+        bad_file = SimpleUploadedFile(
+            name="test_text.txt",
+            content=open(self.path + "/requirements.txt", "rb").read(),
+            content_type="text/plain",
+        )
+        response = self.client.post(
+            reverse("upload:submit_file"),
+            {
+                "file": bad_file,
+                "description": "Yooo",
+                "title": "Test Title",
+                "permission": "on",
+            },
+            follow=True,
+        )
+        self.assertIn(
+            "Not the correct file type. Try .jpg, .png, .mp3, .mp4, or .flac",
+            response.content.decode(),
+        )
 
 
 class SubmissionSelectPageTest(TestCase):
